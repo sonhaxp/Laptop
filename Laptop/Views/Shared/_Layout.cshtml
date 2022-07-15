@@ -1,0 +1,49 @@
+﻿<!doctype html>
+<html class="no-js" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <!-- Page Title -->
+    <title>Truong Son Laptop </title>
+    <!--Fevicon-->
+    <link rel="icon" href="~/Content/img/logo/logo-TS.jpg" type="image/x-icon" />
+    @Styles.Render("~/Content/mycss")
+    
+    <!-- Modernizer JS -->
+    <script src="~/Scripts/js/vendor/modernizr-3.5.0.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery-3.6.0.min.js"></script>
+
+</head>
+<body>
+    @Html.Action("RenderManufacturer", "Home")
+    <div id="body">
+        @RenderBody()
+    </div>
+
+    @Html.Partial("_Footer")
+    @Scripts.Render("~/bundles/myjs")
+    <script>
+        
+        $(document).on("click", ".top-search-btn", function () {
+            var manufacturer = $(".current").html();
+            var key = $('.top-cat-field').val();
+            if (key != '')
+                $.ajax({
+                    url: "/tim-kiem?key=" + key + "&manufacturer=" + manufacturer,
+                    method: "GET",
+                    success: function (res) {
+                        $('#body').html(res)
+                        $('#paging').html("")
+                    }
+                })
+        })
+        $(document).on("click", ".btn-cart", function () {
+            var id = $(this).attr("name")
+            window.location = "/Cart/AddCart/" + id;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+﻿@{ 
+    List<Laptop.Models.Entities.CPU> cpu = ViewBag.CPU;
+    List<Laptop.Models.Entities.Drive> drive = ViewBag.Drive;
+    List<Laptop.Models.Entities.Display> display = ViewBag.Display;
+    List<Laptop.Models.Entities.Graphic> graphic = ViewBag.Graphic;
+    List<Laptop.Models.Entities.RAM> ram = ViewBag.RAM;
+    List<Laptop.Models.Entities.Manufacturer> manufacturer = ViewBag.Manufacturer;
+    List<Laptop.Models.Entities.Need> need = ViewBag.Need;
+}
+<div class="col-12">
+    <div class="bg-light rounded h-100 p-4">
+        <div class="row justify-content-between">
+            <h6 class="mb-4 col-4">Laptop</h6>
+            <div class="row col-4">
+                <input class="form-control border-0 col-8" id="ip-search-product" type="search" placeholder="Tìm kiếm">
+                <button class="btn btn-primary col-2" id="btn-search-product">Tìm</button>
+            </div>
+        </div>
+        
+        <div class="table-responsive">
+            <i class="btn-action fa fa-plus bg-success mt-4 product" data-action="0" per="0" id="0" data-toggle="modal" data-target="#product-modal"></i>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Mã máy</th>
+                        <th scope="col">Tên máy</th>
+                        <th scope="col">Số lượng</th>
+                        <th scope="col">Số lượng đã bán</th>
+                        <th scope="col">Số lượng yêu thích</th>
+                        <th scope="col">Điểm đánh giá</th>
+                        <th scope="col">Trạng thái</th>
+                        <th scope="col">Thao Tác</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="paging-product">
+                
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="product-modal" tabindex="-1" role="dialog" aria-labelledby="product-modal" aria-hidden="true">
+                <div class="alert alert-success alert-dismissible fade show" style="width: 50%;margin:auto;display:none" role="alert">
+                    Thành công!
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalCenterTitle">Thêm Laptop</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form id="my-form" class="modal-body">
+                            <div class="input-group">
+                                <b>Tên Laptop</b>
+                                <input type="text" name="ten laptop" id="ip-productname">
+                            </div>
+                            <div class="input-group">
+                                <b>Tên ngắn</b>
+                                <input name="ten ngan" type="text" id="ip-productshortname">
+                            </div>
+                            <div class="input-group">
+                                <b>CPU</b>
+                                <select name="cpu" id="ip-cpu">
+                                    <option value="">Chọn</option>
+                                    @foreach (var i in cpu)
+                                    {
+                                        <option value="@i.CPU_Id">@i.CPU_Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <b>Ổ cứng</b>
+                                <select name="ổ cứng" id="ip-drive">
+                                    <option value="">Chọn</option>
+                                    @foreach (var i in drive)
+                                    {
+                                        <option value="@i.Drive_Id">@i.Drive_Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <b>Màn hình</b>
+                                <select name="display" id="ip-display">
+                                    <option value="">Chọn</option>
+                                    @foreach (var i in display)
+                                    {
+                                        <option value="@i.Display_Id">@i.Display_Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <b>Đồ họa</b>
+                                <select name="graphic" id="ip-graphic">
+                                    <option value="">Chọn</option>
+                                    @foreach (var i in graphic)
+                                    {
+                                        <option value="@i.Graphic_Id">@i.Graphic_Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <b>RAM</b>
+                                <select name="ram" id="ip-ram">
+                                    <option value="">Chọn</option>
+                                    @foreach (var i in ram)
+                                    {
+                                        <option value="@i.RAM_Id">@i.RAM_Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <b>Hãng sản xuất</b>
+                                <select name="manufacturer" id="ip-manufacturer">
+                                    <option value="">Chọn</option>
+                                    @foreach (var i in manufacturer)
+                                    {
+                                        <option value="@i.Manufacturer_Id">@i.Manufacturer_Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <b>Nhu cầu</b>
+                                <select name="need" id="ip-need">
+                                    <option value="">Chọn</option>
+                                    @foreach (var i in need)
+                                    {
+                                        <option value="@i.Need_Id">@i.Need_Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <b>Trạng thái</b>
+                                <select name="status" id="ip-status">
+                                    <option value="">Chọn</option>
+                                    <option value="0">Hết hàng</option>
+                                    <option value="1">Còn hàng</option>
+                                    <option value="2">Sắp nhập</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <b id="image-current">Ảnh</b>
+                                <input name="image" type="file" id="ip-image">
+                            </div>
+                            <div class="input-group">
+                                <b>Giá</b>
+                                <input name="price" type="number" id="ip-price">
+                            </div>
+                            <div class="input-group">
+                                <b>Số lượng</b>
+                                <input name="quantity" type="number" id="ip-quantity">
+                            </div>
+                            <div class="input-group">
+                                <b>Giảm giá</b>
+                                <input name="discount" type="number" id="ip-discount">
+                            </div>
+                            <div class="input-group">
+                                <b>Chi tiết</b>
+                                <textarea style="width:100%" id="ip-detail"></textarea>
+                            </div>
+                            <div class="input-group">
+                                <b>Trọng lượng</b>
+                                <input name="weight" type="number" id="ip-weight">
+                            </div>
+                            <button type="button" id="btn-submit" class="btn btn-primary">Gửi</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

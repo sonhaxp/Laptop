@@ -1,0 +1,119 @@
+﻿@{ 
+    IEnumerable<Laptop.Models.Entities.Manufacturer> manufacturer = ViewBag.Manufacturer;
+    Laptop.Models.Entities.User user =  ViewBag.user;
+    int wishlist = ViewBag.wishlist;
+    int cart = ViewBag.cart;
+}
+<header class="header-pos">
+    <div class="header-top black-bg">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-8 col-12">
+                    <div class="header-top-left">
+                        <ul>
+                            <li><span>Email: </span>truongsonlaptop@gmail.com</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-12">
+                    <div class="box box-right">
+                        <ul>
+                            <li class="settings">
+                                @if (user == null)
+                                {
+                                    <a class="ha-toggle" href="#">Tài khoản<span class="lnr lnr-chevron-down"></span></a>
+                                    <ul class="box-dropdown ha-dropdown">
+                                        <li><a href="/dang-ki">Đăng kí</a></li>
+                                        <li><a href="/dang-nhap">Đăng nhập</a></li>
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <a class="ha-toggle" href="#">@user.Name<span class="lnr lnr-chevron-down"></span></a>
+                                    <ul class="box-dropdown ha-dropdown">
+                                        <li><a href="/thong-tin">Thông tin</a></li>
+                                        <li><a href="/dang-xuat">Đăng xuất</a></li>
+                                    </ul>
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-middle home-header2 theme-bg">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-lg-3 col-md-4 col-sm-4 col-12">
+                    <div class="logo">
+                        <a href="/trang-chu"><img src="~/Content/img/logo/logo-TS.jpg" alt="brand-logo"></a>
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-12 col-12 order-sm-last">
+                    <div class="header-middle-inner">
+                        <form action="https://htmldemo.net/sinrato/sinrato/method">
+                            <div class="top-cat hm1">
+                                <div class="search-form">
+                                    <select>
+                                        <optgroup label="Laptop">
+                                            <option value="0">Tất cả</option>
+                                            @foreach (var i in manufacturer)
+                                            {
+                                                    <option value="@i.Manufacturer_Id">@i.Manufacturer_Name</option>
+                                                }
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                            <input type="text" class="top-cat-field" placeholder="Tìm kiếm">
+                            <input type="button" class="top-search-btn" value="Tìm kiếm">
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-8 col-12 col-sm-8 order-lg-last">
+                    <div class="mini-cart-option">
+                        <ul>
+                            <li class="wishlist">
+                                <a class="ha-toggle" href="/yeu-thich"><span class="lnr lnr-heart"></span><span class="count" id="count-wishlist">@wishlist</span>Yêu thích</a>
+                            </li>
+                            <li class="my-cart">
+                                <a class="ha-toggle" href="/gio-hang"><span class="lnr lnr-cart"></span><span class="count" id="count-cart">@cart</span>Giỏ hàng</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-top-menu menu-style2 mb-40 sticker">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="top-main-menu">
+                        <div class="main-menu">
+                            <nav id="mobile-menu">
+                                <ul>
+                                    <li>
+                                        <a href="/trang-chu">Trang chủ</a>
+                                    </li>
+                                    <li>
+                                        <a href="/san-pham">Sản phẩm</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Blog</a>
+                                    </li>
+                                    <li><a href="#">Liên hệ</a></li>
+                                </ul>
+                            </nav>
+                        </div> <!-- </div> end main menu -->
+                        <div class="header-call-action">
+                            <p><span class="lnr lnr-phone"></span>Số điện thoại : <strong>0936.822.222</strong></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 d-block d-lg-none"><div class="mobile-menu"></div></div>
+            </div>
+        </div>
+    </div>
+</header>

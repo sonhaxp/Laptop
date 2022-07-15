@@ -1,0 +1,13 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_Product")
+<script>
+    $(document).on("click", ".btn-cart", function () {
+        var id = $(this).attr("name")
+        window.location = "/Cart/AddCart/" + id;
+    });
+</script>

@@ -1,0 +1,104 @@
+﻿@{
+    Laptop.Models.Entities.Product product = ViewBag.Product;
+    string status = product.Product_Status == 1 ? "Còn hàng" : "Hết hàng";
+}
+<div class="product-details-main-wrapper pb-50">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="product-large-slider mb-20">
+                    <div class="pro-large-img">
+                        <img src="~/Content/img/product/@product.Image" alt="@product.Product_ShortName" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="product-details-inner">
+                    <div class="product-details-contentt">
+                        <div class="pro-details-name mb-10">
+                            <h3>@product.Product_Name</h3>
+                        </div>
+                        <div class="pro-details-review mb-20">
+                            <ul>
+                                <li>
+                                    @{
+                                        int rateStar = (int)Math.Round((double)product.Rate_Star);
+                                        for (int k = 1; k <= rateStar; k++)
+                                        {
+                                            <span class="rate" id="@product.Product_Id" name="@k"><i class="fa fa-star yellow"></i></span>
+                                        }
+                                        for (int k = rateStar+1; k <= 5; k++)
+                                        {
+                                            <span class="rate" id="@product.Product_Id" name="@k"><i class="fa fa-star"></i></span>
+                                        }
+                                        <span class="rate_star">@product.Rate_Star/5</span>
+                                    }
+                                </li>
+                                <li>&nbsp;<span class="rate_quantity">@product.Quantity_Rate</span> đánh giá</li>
+                            </ul>
+                        </div>
+                        <div class="price-box mb-15">
+                            <span class="regular-price"><span class="special-price">@String.Format("{0:0,00} vnđ", product.Product_Price - product.Product_Price * product.Product_Discount / 100)</span></span>
+                            <span class="old-price"><del>@String.Format("{0:0,00} vnđ", product.Product_Price)</del></span>
+                        </div>
+                        <div class="product-detail-sort-des pb-20">
+                            <p>@product.Product_Description</p>
+                        </div>
+                        <div class="pro-details-list pt-20">
+                            <ul>
+                                <li><span>Hãng sản xuất : </span>@product.Manufacturer.Manufacturer_Name</li>
+                                <li><span>Màn hình : </span>@product.Graphic.Graphic_Name</li>
+                                <li><span>CPU : </span>@product.CPU.CPU_Name</li>
+                                <li><span>RAM : </span>@product.RAM.RAM_Name</li>
+                                <li><span>Ổ cứng : </span>@product.Drive.Drive_Name</li>
+                                <li><span>Đồ họa : </span>@product.Graphic.Graphic_Name</li>
+                                <li><span>Trọng lượng : </span>@product.Product_Weight kg</li>
+                                <li><span>Tình trạng : </span>@status</li>
+                            </ul>
+                        </div>
+                        <div class="pro-quantity-box mb-30">
+                            <div class="qty-boxx">
+                                <button class="btn-cart lg-btn" name="@product.Product_Id">Thêm vào giỏ hàng</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).on("click", ".btn-cart", function () {
+        var id = $(this).attr("name")
+        window.location = "/Cart/AddCart/" + id;
+    });
+    $(document).on("click", ".rate", function () {
+        var id = $(this).attr("id");
+        var star = $(this).attr("name");
+        $.ajax({
+            url: "/Rate/Rate?id=" + id + "&star=" + star,
+            method: "POST",
+            success: function (res) {
+                if (res.message == "not-login") {
+                    alert('Bạn cần đăng nhập để đánh giá')
+                }
+                else if (res.message == "not-buy") {
+                    alert('Bạn cần mua sản phẩm này để đánh giá')
+                }
+                else {
+                    alert('đánh giá thành công')
+                    $(".rate_star").html(res.star + '/5');
+                    $(".rate_quantity").html(res.quanlity);
+                    var rateStar = Math.round(res.star);
+                    var t = $(".fa.fa-star");
+                    t.removeClass('yellow');
+                    for (var i = 0; i < rateStar; i++) {
+                        t.get(i).classList.add('yellow');
+                    }
+                    
+                }
+            }
+        });
+    });
+
+</script>

@@ -1,0 +1,167 @@
+﻿<div class="main-wrapper pt-35">
+    <div class="container-fluid">
+        <div class="row">
+            @Html.Action("Render_NavBar", "Product")
+            <div class="col-lg-9 order-first order-lg-last">
+                <div class="product-shop-main-wrapper mb-50">
+                    <div class="shop-top-bar mb-30">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="top-bar-left">
+                                    <div class="product-view-mode">
+                                        <a class="active" href="#" data-target="column_3"><span>3-col</span></a>
+                                        <a href="#" data-target="grid"><span>4-col</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="top-bar-right">
+                                    <div class="product-short">
+                                        <p>Sắp xếp theo : </p>
+                                        <select class="nice-select" onchange="sort(this);" name="sortby">
+                                            <option value="0">Bán chạy nhất</option>
+                                            <option value="1">Giá từ thấp đến cao</option>
+                                            <option value="2">Giá từ cao đến thấp</option>
+                                            <option value="3">Đánh giá cao</option>
+                                            <option value="4">Nhiều người yêu thích</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="product-product-main">
+                        @Html.Action("Render_Product", "Product")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/js/home.js"></script>
+<script>
+    var manufacturer = [];
+    var orderby = 0;
+    var need = [];
+    var price = [];
+    var page_product = 1;
+    sort = function (sel) {
+        orderby = sel.value;
+        getProduct(1, manufacturer, need, price, orderby);
+    }
+    $(document).on("click", ".filter-manufacturer", function () {
+        var id = $(this).attr('per');
+        if (id == 0) {
+            if (!$(this).hasClass('active')) {
+                $('.filter-manufacturer').removeClass('active');
+                manufacturer = [];
+                $(this).addClass('active');
+            }
+        }
+        else {
+            if ($(this).hasClass('active') == true) {
+                temp = [];
+                for (var i = 0; i < manufacturer.length; i++) {
+                    if (manufacturer[i] != id) {
+                        temp.push(manufacturer[i]);
+                    }
+                }
+                manufacturer = temp;
+                $(this).removeClass('active');
+            }
+            else {
+                $('.filter-manufacturer').get(0).classList.remove('active')
+                $(this).addClass('active');
+                manufacturer.push(id)
+            }
+        }
+        if (manufacturer.length==0) $('.filter-manufacturer').get(0).classList.add('active')
+        getProduct(1, manufacturer, need, price, orderby);
+    });
+    $(document).on("click", ".filter-need", function () {
+        var id = $(this).attr('per');
+        if (id == 0) {
+            if (!$(this).hasClass('active')) {
+                $('.filter-need').removeClass('active');
+                need = [];
+                $(this).addClass('active');
+            }
+        }
+        else {
+            if ($(this).hasClass('active') == true) {
+                temp = [];
+                for (var i = 0; i < need.length; i++) {
+                    if (need[i] != id) {
+                        temp.push(need[i]);
+                    }
+                }
+                need = temp;
+                $(this).removeClass('active');
+            }
+            else {
+                $('.filter-need').get(0).classList.remove('active')
+                $(this).addClass('active');
+                need.push(id)
+            }
+        }
+        if (need.length==0) $('.filter-need').get(0).classList.add('active')
+        getProduct(1, manufacturer, need, price, orderby);
+    });
+    $(document).on("click", ".filter-price", function () {
+        var id = $(this).attr('per');
+        if (id == 0) {
+            if (!$(this).hasClass('active')) {
+                $('.filter-price').removeClass('active');
+                price = [];
+                $(this).addClass('active');
+            }
+        }
+        else {
+            if ($(this).hasClass('active') == true) {
+                temp = [];
+                for (var i = 0; i < price.length; i++) {
+                    if (price[i] != id) {
+                        temp.push(price[i]);
+                    }
+                }
+                price = temp;
+                $(this).removeClass('active');
+            }
+            else {
+                $('.filter-price').get(0).classList.remove('active')
+                $(this).addClass('active');
+                price.push(id)
+            }
+        }
+        if (price.length==0) $('.filter-price').get(0).classList.add('active')
+        getProduct(1, manufacturer, need, price, orderby);
+    });
+    getProduct = function (page_product, manufacturer, need, price, orderby) {
+        var form = new FormData();
+        form.append("manufacturer", manufacturer.toString())
+        form.append("need", need.toString())
+        form.append("price", price.toString())
+        form.append("page", page_product)
+        form.append("orderby", orderby)
+        $.ajax({
+            url: "/Product/getProduct",
+            data: form,
+            method: "POST",
+            contentType: false,
+            processData: false,
+            success: function (res) {
+                $("#product-product-main").html(res);
+                $('.btn-paging.active').removeClass('active');
+                $('.btn-paging').get(page_product-1).classList.add('active')
+            },
+            error: function () {
+                console.log("Load api get thất bại");
+            }
+        });
+    }
+    $(document).on("click", ".btn.btn-primary.btn-paging", function () {
+        page_product = $(this).html();
+        getProduct(page_product, manufacturer, need, price, orderby);
+    })
+</script>

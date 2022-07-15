@@ -1,0 +1,245 @@
+﻿@{
+    List<Laptop.Models.Entities.Product> BestSeller = ViewBag.BestSeller;
+    List<Laptop.Models.Entities.Product> BestDiscount = ViewBag.BestDiscount;
+    List<Laptop.Models.Entities.Product> BestWish = ViewBag.BestWish;
+}
+<!-- slider area start -->
+<div class="banner-area">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-12">
+                <div class="hero-slider-active hero-style-2 slick-dot-style slider-arrow-style">
+                    <div class="single-slider d-flex align-items-center" style="background-image: url(/Content/img/slider/slider.jpg);">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="slider-text">
+                                        <h1>Laptop<br>Laptop Acer Nitro Gaming</h1>
+                                        <a class="btn-1 home-btn" href="/Product">Vào cửa hàng</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="single-slider d-flex align-items-center" style="background-image: url(/Content/img/slider/slider1.jpg); ">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="slider-text">
+                                        <h1>Bộ sưu tập laptop&amp;<br>Varius defense</h1>
+                                        <a class="btn-1 home-btn" href="/Product">Vào cửa hàng</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- slider area end -->
+
+<div class="home2-main-wrapper mt-30">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 order-first order-lg-last">
+                <div class="home2-content-wrapper">
+                    <!-- product wrapper area start -->
+                    <div class="product-wrapper fix pb-75">
+                        <div class="container-fluid plr-none">
+                            <div class="section-title product-spacing home2-tab-spacing">
+                                <h3><span>Laptop bán chạy nhất</span></h3>
+                                <a href="/Product">Xem tất cả</a>
+                            </div>
+                            <div class="row">
+                                @foreach (var i in BestSeller)
+                                {
+                                    <div class="product-item  col-sm-3">
+                                        <div class="product-thumb">
+                                            <a href="/san-pham/@i.Product_Id">
+                                                <img src="~/Content/img/product/@i.Image" class="pri-img" alt="@i.Product_Name">
+                                            </a>
+                                            <div class="box-label">
+                                                @if (i.Product_Discount > 0)
+                                                {
+                                                    <div class="label-product label_sale">
+                                                        <span>@i.Product_Discount%</span>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="action-links">
+                                                <div class="btn-wishlist wish-list-@i.Product_Id" name="@i.Product_Id" title="yêu thích"><i class="lnr lnr-heart"></i></div>
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="product-caption">
+                                            <div class="manufacture-product">
+                                                <p><a href="">@i.Manufacturer.Manufacturer_Name</a></p>
+                                            </div>
+                                            <div class="product-name">
+                                                <h4><a href="/san-pham/@i.Product_Id">@i.Product_ShortName</a></h4>
+                                            </div>
+                                            <div class="ratings">
+                                                @{
+                                                    int rateStar = (int)Math.Round((double)i.Rate_Star);
+                                                    for (int k = 0; k < rateStar; k++)
+                                                    {
+                                                        <span class="yellow"><i class="lnr lnr-star"></i></span>
+                                                    }
+                                                    for (int k = rateStar; k < 5; k++)
+                                                    {
+                                                        <span><i class="lnr lnr-star"></i></span>
+                                                    }
+                                                    <span>@i.Rate_Star/5</span>
+                                                }
+                                            </div>
+                                            <div class="price-box">
+                                                <span class="regular-price"><span class="special-price">@String.Format("{0:0,00} vnđ", (i.Product_Price - i.Product_Price*(i.Product_Discount/100))).ToString()</span></span>
+                                                <span class="old-price"><del>@String.Format("{0:0,00} vnđ", i.Product_Price.ToString())</del></span>
+                                            </div>
+                                            <button class="btn-cart" name="@i.Product_Id" type="button">Thêm vào giỏ</button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 order-first order-lg-last">
+                <div class="home2-content-wrapper">
+                    <!-- product wrapper area start -->
+                    <div class="product-wrapper fix pb-75">
+                        <div class="container-fluid plr-none">
+                            <div class="section-title product-spacing home2-tab-spacing">
+                                <h3><span>Laptop khuyến mãi cao nhất</span></h3>
+                                <a href="/Product">Xem tất cả</a>
+                            </div>
+                            <div class="row">
+                                @foreach (var i in BestDiscount)
+                                {
+                                    <div class="product-item  col-sm-3">
+                                        <div class="product-thumb">
+                                            <a href="/san-pham/@i.Product_Id">
+                                                <img src="~/Content/img/product/@i.Image" class="pri-img" alt="@i.Product_Name">
+                                            </a>
+                                            <div class="box-label">
+                                                @if (i.Product_Discount > 0)
+                                                {
+                                                    <div class="label-product label_sale">
+                                                        <span>@i.Product_Discount%</span>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="action-links">
+                                                <div class="btn-wishlist wish-list-@i.Product_Id" name="@i.Product_Id" title="yêu thích"><i class="lnr lnr-heart"></i></div>
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="product-caption">
+                                            <div class="manufacture-product">
+                                                <p><a href="">@i.Manufacturer.Manufacturer_Name</a></p>
+                                            </div>
+                                            <div class="product-name">
+                                                <h4><a href="/san-pham/@i.Product_Id">@i.Product_ShortName</a></h4>
+                                            </div>
+                                            <div class="ratings">
+                                                @{
+                                                    int rateStar = (int)Math.Round((double)i.Rate_Star);
+                                                    for (int k = 0; k < rateStar; k++)
+                                                    {
+                                                        <span class="yellow"><i class="lnr lnr-star"></i></span>
+                                                    }
+                                                    for (int k = rateStar; k < 5; k++)
+                                                    {
+                                                        <span><i class="lnr lnr-star"></i></span>
+                                                    }
+                                                    <span>@i.Rate_Star/5</span>
+                                                }
+                                            </div>
+                                            <div class="price-box">
+                                                <span class="regular-price"><span class="special-price">@String.Format("{0:0,00} vnđ", (i.Product_Price - i.Product_Price * (i.Product_Discount / 100))).ToString()</span></span>
+                                                <span class="old-price"><del>@String.Format("{0:0,00} vnđ", i.Product_Price.ToString())</del></span>
+                                            </div>
+                                            <button class="btn-cart" type="button" name="@i.Product_Id">Thêm vào giỏ</button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 order-first order-lg-last">
+                <div class="home2-content-wrapper">
+                    <!-- product wrapper area start -->
+                    <div class="product-wrapper fix pb-75">
+                        <div class="container-fluid plr-none">
+                            <div class="section-title product-spacing home2-tab-spacing">
+                                <h3><span>Laptop nhiều người yêu thích nhất</span></h3>
+                                <a href="/Product">Xem tất cả</a>
+                            </div>
+                            <div class="row">
+                                @foreach (var i in BestWish)
+                                {
+                                    <div class="product-item  col-sm-3">
+                                        <div class="product-thumb">
+                                            <a href="/san-pham/@i.Product_Id">
+                                                <img src="~/Content/img/product/@i.Image" class="pri-img" alt="@i.Product_Name">
+                                            </a>
+                                            <div class="box-label">
+                                                @if (i.Product_Discount > 0)
+                                                {
+                                                    <div class="label-product label_sale">
+                                                        <span>@i.Product_Discount%</span>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="action-links">
+                                                <div class="btn-wishlist wish-list-@i.Product_Id" name="@i.Product_Id" title="yêu thích"><i class="lnr lnr-heart"></i></div>
+                                                
+                                            </div>
+                                        </div>
+                                        <div class="product-caption">
+                                            <div class="manufacture-product">
+                                                <p><a href="">@i.Manufacturer.Manufacturer_Name</a></p>
+                                            </div>
+                                            <div class="product-name">
+                                                <h4><a href="/san-pham/@i.Product_Id">@i.Product_ShortName</a></h4>
+                                            </div>
+                                            <div class="ratings">
+                                                @{
+                                                    int rateStar = (int)Math.Round((double)i.Rate_Star);
+                                                    for (int k = 0; k < rateStar; k++)
+                                                    {
+                                                        <span class="yellow"><i class="lnr lnr-star"></i></span>
+                                                    }
+                                                    for (int k = rateStar; k < 5; k++)
+                                                    {
+                                                        <span><i class="lnr lnr-star"></i></span>
+                                                    }
+                                                    <span>@i.Rate_Star/5</span>
+                                                }
+                                            </div>
+                                            <div class="price-box">
+                                                <span class="regular-price"><span class="special-price">@String.Format("{0:0,00} vnđ", (i.Product_Price - i.Product_Price * (i.Product_Discount / 100))).ToString()</span></span>
+                                                <span class="old-price"><del>@String.Format("{0:0,00} vnđ", i.Product_Price.ToString())</del></span>
+                                            </div>
+                                            <button class="btn-cart" type="button" name="@i.Product_Id">Thêm vào giỏ</button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- main wrapper end -->

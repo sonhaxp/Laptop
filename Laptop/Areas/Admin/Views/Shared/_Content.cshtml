@@ -1,0 +1,220 @@
+﻿            <!-- Sale & Revenue Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-chart-line fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <p class="mb-2">Tổng số lượng bán trong ngày</p>
+                                <h6 class="mb-0" id="laptop-1-ngay">$1234</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-chart-bar fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <p class="mb-2">Tổng số lượng bán trong tháng</p>
+                                <h6 class="mb-0" id="laptop-1-thang">$1234</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-chart-area fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <p class="mb-2">Doanh thu trong ngày</p>
+                                <h6 class="mb-0" id="doanh-thu-ngay">$1234</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                            <i class="fa fa-chart-pie fa-3x text-primary"></i>
+                            <div class="ms-3">
+                                <p class="mb-2">Doanh thu trong tháng</p>
+                                <h6 class="mb-0" id="doanh-thu-thang">$1234</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sale & Revenue End -->
+            <!-- Sales Chart Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="row g-4">
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-light text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">Doanh thu theo hãng sản xuất</h6>
+                            </div>
+                            <canvas id="worldwide-sales"></canvas>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-xl-6">
+                        <div class="bg-light text-center rounded p-4">
+                            <div class="d-flex align-items-center justify-content-between mb-4">
+                                <h6 class="mb-0">Doanh thu theo tháng</h6>
+                            </div>
+                            <canvas id="salse-revenue"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sales Chart End -->
+            <!-- Recent Sales Start -->
+            <div class="container-fluid pt-4 px-4">
+                <div class="bg-light text-center rounded p-4">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h6 class="mb-0">Top Khách Hàng trong năm</h6>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table text-start align-middle table-bordered table-hover mb-0">
+                            <thead>
+                                <tr class="text-dark">
+                                    <th scope="col">Họ tên</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Địa chỉ</th>
+                                    <th scope="col">Số điện thoại</th>
+                                    <th scope="col">Chi tiêu</th>
+                                </tr>
+                            </thead>
+                            <tbody >
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Recent Sales End -->
+            <script>
+                function formatCash(str) {
+                    return str.split('').reverse().reduce((prev, next, index) => {
+                        return ((index % 3) ? next : (next + ',')) + prev
+                    })
+                }
+                GetDS = function () {
+                    $.ajax({
+                        url: "/api/Statistics",
+                        method: "GET",
+                        contentType: "json",
+                        crossDomain: true,
+                        dataType: 'json',
+                        success: function (res) {
+                            $("#laptop-1-ngay").text(res[0] + " chiếc");
+                            $("#laptop-1-thang").text(res[1] + " chiếc");
+                            $("#doanh-thu-ngay").text(formatCash(""+res[2]) + "vnđ");
+                            $("#doanh-thu-thang").text(formatCash(""+res[3]) + "vnđ");
+                        },
+                        error: function () {
+                            console.log("Load api get thất bại");
+                        }
+                    });
+                }
+                GetDS();
+                GetReveneManufacturer = function () {
+                    $.ajax({
+                        url: "/getReveneManufacturer",
+                        method: "GET",
+                        contentType: "json",
+                        crossDomain: true,
+                        dataType: 'json',
+                        success: function (res) {
+                            var len = res.length;
+                            var hang = []
+                            var cot = []
+                            for (var i = 0; i < len; i++) {
+                                hang.push(res[i][0])
+                                cot.push(Number(res[i][1]))
+                            }
+                            var ctx1 = $("#worldwide-sales").get(0).getContext("2d");
+                            var myChart1 = new Chart(ctx1, {
+                                type: "bar",
+                                data: {
+                                    labels: hang,
+                                    datasets: [{
+                                        label: "Doanh thu hãng sản xuất",
+                                        data: cot,
+                                        backgroundColor: "rgba(0, 156, 255, .7)"
+                                    }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true
+                                }
+                            });
+                        },
+                        error: function () {
+                            console.log("Load api get thất bại");
+                        }
+                    });
+                }
+                GetReveneManufacturer()
+                GetRevene = function () {
+                    $.ajax({
+                        url: "/GetRevene",
+                        method: "GET",
+                        contentType: "json",
+                        crossDomain: true,
+                        dataType: 'json',
+                        success: function (res) {
+                            var len = res.length;
+                            var hang = []
+                            var cot1 = []
+                            for (var i = 0; i < len; i++) {
+                                hang.push(res[i][0])
+                                cot1.push(Number(res[i][1]))
+                            }
+                            // Salse & Revenue Chart
+                            var ctx2 = $("#salse-revenue").get(0).getContext("2d");
+                            var myChart2 = new Chart(ctx2, {
+                                type: "line",
+                                data: {
+                                    labels: hang,
+                                    datasets: [{
+                                        label: "Doanh thu theo tháng",
+                                        data: cot1,
+                                        backgroundColor: "rgba(0, 156, 255, .5)",
+                                        fill: true
+                                    }
+                                    ]
+                                },
+                                options: {
+                                    responsive: true
+                                }
+                            });
+                        },
+                        error: function () {
+                            console.log("Load api get thất bại");
+                        }
+                    });
+                }
+                GetRevene();
+                getTopUser = function () {
+                    $.ajax({
+                        url: "/getTopUser",
+                        method: "GET",
+                        contentType: "json",
+                        crossDomain: true,
+                        dataType: 'json',
+                        success: function (res) {
+                            var len = res.length;
+                            var table = ''
+                            for (var i = 0; i < len; i++) {
+                                table = table + '<tr>';
+                                table = table + '<td>' + res[i][0] + '</td>';
+                                table = table + '<td>' + res[i][1] + '</td>';
+                                table = table + '<td>' + res[i][2] + '</td>';
+                                table = table + '<td>' + res[i][3] + '</td>';
+                                table = table + '<td>' + formatCash("" + res[i][4]) + "vnđ" + '</td>';
+                                table = table + '</tr>';
+                            }
+                            $("tbody").html(table);
+                        },
+                        error: function () {
+                            console.log("Load api get thất bại");
+                        }
+                    });
+                }
+                getTopUser();
+            </script>

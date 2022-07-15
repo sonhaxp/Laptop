@@ -1,0 +1,63 @@
+﻿@{ 
+    List<Laptop.Models.Entities.WishList> products = ViewBag.WishList;
+    foreach (var i in products)
+    {
+        i.Product = new Laptop.Models.Entities.LaptopDBContext().Product.FirstOrDefault(x => x.Product_Id == i.Product_Id);
+    }
+}
+<div class="wishlist-wrapper mb-55">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                <main id="primary" class="site-main">
+                    <div class="wishlist">
+                        <div class="row">
+                            <div class="col-12 col-sm-12 col-md-12 col-lg-12">
+                                <div class="section-title">
+                                    <h3>Danh sách yêu thích</h3>
+                                </div>
+                                <form action="#">
+                                    <div class="table-responsive text-center wishlist-style">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <td>Ảnh</td>
+                                                    <td>Tên sản phẩm</td>
+                                                    <td>Giá</td>
+                                                    <td>Thao tác</td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var i in products)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            <a href="/san-pham/@i.Product_Id"><img src="~/Content/img/product/@i.Product.Image" alt="@i.Product.Product_ShortName" title="@i.Product.Product_ShortName"></a>
+                                                        </td>
+                                                        <td>
+                                                            <a href="/san-pham/@i.Product_Id">@i.Product.Product_ShortName</a>
+                                                        </td>
+                                                        <td>
+                                                            <div class="price">
+                                                                <small><del>>@String.Format("{0:0,00} vnđ", i.Product.Product_Price)</del></small> <br>
+                                                                <strong>@String.Format("{0:0,00} vnđ", i.Product.Product_Price - i.Product.Product_Price * i.Product.Product_Discount / 100)</strong>
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-primary btn-action"  per='1' name='@i.Product_Id'><i class="fa fa-shopping-cart"></i></button>
+                                                            <div class="btn btn-danger btn-action" per='2' name='@i.Product_Id'><i class="fa fa-times"></i></div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div> <!-- end of wishlist -->
+                </main> <!-- end of #primary -->
+            </div>
+        </div> <!-- end of row -->
+    </div> <!-- end of container -->
+</div>

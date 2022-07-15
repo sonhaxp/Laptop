@@ -1,0 +1,442 @@
+﻿@{
+    Laptop.Models.Entities.User admin = (Laptop.Models.Entities.User)Session["admin"];
+}
+<div class="sidebar pe-4 pb-3">
+    <nav class="navbar bg-light navbar-light">
+        <a href="/admin" class="navbar-brand mx-4 mb-3">
+            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>Quản trị</h3>
+        </a>
+        <div class="d-flex align-items-center ms-4 mb-4">
+            <div class="position-relative">
+                <img class="rounded-circle" src="~/Areas/admin/img/user.jpg" alt="" style="width: 40px; height: 40px;">
+                <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+            </div>
+            <div class="ms-3">
+                <h6 class="mb-0" id="name-admin">@admin.Name</h6>
+                <span>@admin.Role.Role_Name</span>
+            </div>
+        </div>
+        <div class="navbar-nav w-100">
+            <a href="#trang-chu" class="nav-item nav-link active" id="home"><i class="fa fa-tachometer-alt me-2" id="trang-chu"></i>Trang chủ</a>
+            <a href="#don-hang" class="nav-item nav-link" id="order"><i class="fa fa-receipt me-2"></i>Đơn hàng</a>
+            <a href="#san-pham" class="nav-item nav-link" id="product"><i class="fa fa-laptop me-2"></i>Sản phẩm</a>
+            <a href="#danh-muc" class="nav-item nav-link" id="khach-hang"><i class="fa fa-list me-2"></i>Danh mục</a>
+            <a href="#khach-hang" class="nav-item nav-link" id="do-an"><i class="fa fa-user me-2"></i>Khách hàng</a>
+            <a href="#nhap-hang" class="nav-item nav-link" id="the-loai"><i class="fa fa-receipt me-2"></i>Nhập hàng</a>
+        </div>
+    </nav>
+</div>
+<script>
+    dateFormat = function (str) {
+        var s = str.split('T')
+        var t = s[0].split('-')
+        var output = t[2] + '/' + t[1] + '/' + t[0];
+        return output
+    }
+    dateFormat2 = function (str) {
+        var s = str.split('T')
+        return s[0]
+    }
+    //trang chu
+    $(document).on("click", "#home", function () {
+        $('.nav-item.nav-link.active').removeClass("active")
+        $(this).addClass("active")
+        $.ajax({
+            url: "/admin/HomeAdmin/Trangchu",
+            success: function (response) {
+                document.getElementById('content-main').innerHTML = response;
+                GetDS();
+                GetReveneManufacturer();
+                GetRevene();
+                getTopUser();
+            },
+            error: function () {
+                console.log("Load api get thất bại");
+            }
+        });
+    });
+    //đơn hàng
+    $(document).on("click", "#order", function () {
+        $('.nav-item.nav-link.active').removeClass("active")
+        $(this).addClass("active")
+        $.ajax({
+            url: "/admin/HomeAdmin/Order",
+            success: function (response) {
+                document.getElementById('content-main').innerHTML = response;
+                getOrder(0, 1);
+                getCountOrder(0);
+            },
+            error: function () {
+                console.log("Load api get thất bại");
+            }
+        });
+
+    });
+    //sản phẩm
+    $(document).on("click", "#product", function () {
+        $('.nav-item.nav-link.active').removeClass("active")
+        $(this).addClass("active")
+        $.ajax({
+            url: "/admin/HomeAdmin/Product",
+            success: function (response) {
+                document.getElementById('content-main').innerHTML = response;
+                getProduct(1, "");
+                getCountProduct("");
+            },
+            error: function (res) {
+                console.log("load thất bại")
+            }
+        });
+    });
+    function formatCash(str) {
+        return str.split('').reverse().reduce((prev, next, index) => {
+            return ((index % 3) ? next : (next + ',')) + prev
+        })
+    }
+    //Đơn hàng
+    var status_order = 0;
+    var page_order = 1;
+    $(document).on("click", ".order-head-click", function () {
+        $('.order-head-click').removeClass("order-head--active");
+        $(this).addClass("order-head--active");
+        status_order = $(this).attr("per");
+        getOrder(status_order, page_order);
+    });
+    getOrder = function (status_order, page_order) {
+        $.ajax({
+            url: "api/Order?status=" + status_order + "&page=" + page_order,
+            method: "GET",
+            contentType: "json",
+            crossDomain: true,
+            dataType: 'json',
+            success: function (res) {
+                var len = res.length;
+                var table = ''
+                for (var i = 0; i < len; i++) {
+                    table = table + '<tr>';
+                    table = table + '<td>' + ((page_order - 1) * 10 + (i + 1)) + '</td>';
+                    table = table + '<td>' + res[i].Order_Id + '</td>';
+                    table = table + '<td>' + dateFormat(res[i].Order_Date) + '</td>';
+                    table = table + '<td>' + res[i].Name + '</td>';
+                    table = table + '<td>' + res[i].PhoneNumber + '</td>';
+                    table = table + '<td>' + res[i].Address + '</td>';
+                    table = table + '<td>' + res[i].Email + '</td>';
+                    if (status_order == 0) {
+                        table = table + '<td>' + "Đang chờ" + '</td>';
+                    }
+                    else if (status_order == 1) {
+                        table = table + '<td>' + "Đã xong" + '</td>';
+                    }
+                    else {
+                        table = table + '<td>' + "Đã hủy" + '</td>';
+                    }
+                    if (status_order == 0) {
+                        table = table + "<td>" + "<i class='fa fa-check btn-action order mr-3 bg-primary' title='Xác nhận' per='1' id='" + res[i].Order_Id + "'></i>";
+                        table = table + "<i class='fa fa-trash btn-action order bg-danger' order per='2' title='Hủy' id='" + res[i].Order_Id + "'></i>";
+                        table = table + '<i class="fa fa-info bg-info btn-action" data-target="#quickk_view" title="Xem chi tiết" data-toggle="modal" name="' + res[i].Order_Id + '" id="show-transaction"></i>' + '</td>';
+                    }
+                    else {
+                        table = table + "<td>" + '<i class="fa fa-info btn-action  bg-info" data-target="#quickk_view" data-toggle="modal" name="' + res[i].Order_Id + '" id="show-transaction"></i>' + '</td>';
+                    }
+                    table = table + '</tr>';
+                }
+                $("tbody").html(table);
+            },
+            error: function () {
+                console.log("Load api get thất bại");
+            }
+        });
+    }
+    getCountOrder = function (status_order) {
+        $.ajax({
+            url: "api/Order?status=" + status_order,
+            method: "GET",
+            contentType: "json",
+            crossDomain: true,
+            dataType: 'json',
+            success: function (res) {
+                var html = '<div class="btn btn-primary btn-paging-order" id="btn-active" style="background-color:tomato">1</div>'
+                for (var i = 2; i <= res; i++) {
+                    html = html + '<div class="btn btn-primary btn-paging-order">' + i + '</div>';
+                }
+                $('#paging-order').html(html);
+            }
+        })
+    }
+    $(document).on("click", "#show-transaction", function () {
+        var id = $(this).attr("name");
+        $.ajax({
+            url: "/User/GetOrderDetail?order_id=" + id,
+            method: "GET",
+            success: function (res) {
+                $(".modal-body").html(res);
+            },
+            error: function () {
+                console.log("Load api get thất bại");
+            }
+        });
+    });
+    $(document).on("click", ".btn-paging-order", function () {
+        $('.btn-paging-order').removeAttr("id");
+        $('.btn-paging-order').css("background-color", "#007bff");
+        $(this).attr("id", "btn-active")
+        $(this).css("background-color", "tomato");
+        page_order = $(this).html();
+        getOrder(status_order, page_order);
+    });
+    $(document).on("click", ".btn-action.order", function () {
+        var id = $(this).attr("id");
+        var per = $(this).attr("per");
+        if (per == 1) {
+            if (confirm("Bạn có chắc xác nhận đơn hàng này không?")) {
+                $.ajax({
+                    url: "/admin/HomeAdmin/UpdateOrder?id=" + id + "&status=" + per,
+                    method: "PUT",
+                    success: function () {
+                        getOrder(status_order, page_order);
+                    }
+                });
+            }
+        }
+        if (per == 2) {
+            if (confirm("Bạn có chắc hủy đơn hàng này không?")) {
+                $.ajax({
+                    url: "/admin/HomeAdmin/UpdateOrder?id=" + id + "&status=" + per,
+                    method: "PUT",
+                    success: function () {
+                        getOrder(status_order, page_order);
+                    }
+                });
+            }
+        }
+    });
+    // Sản phẩm
+    var key_product = "";
+    getCountProduct = function (key_product) {
+        $.ajax({
+            url: "api/Product?key=" + key_product,
+            method: "GET",
+            contentType: "json",
+            crossDomain: true,
+            dataType: 'json',
+            success: function (res) {
+                var html = '<div class="btn btn-primary btn-paging-product" id="btn-active" style="background-color:tomato">1</div>'
+                for (var i = 2; i <= res; i++) {
+                    html = html + '<div class="btn btn-primary btn-paging-product">' + i + '</div>';
+                }
+                $('#paging-product').html(html);
+            }
+        });
+    };
+    getProduct = function (page_product, key_product) {
+        $.ajax({
+            url: "/api/Product?page=" + page_product + "&key=" + key_product,
+            method: "GET",
+            contentType: "json",
+            crossDomain: true,
+            dataType: 'json',
+            success: function (res) {
+                var len = res.length;
+                var table = ''
+                for (var i = 0; i < len; i++) {
+                    table = table + '<tr>';
+                    table = table + '<td>' + ((page_product - 1) * 10 + (i + 1)) + '</td>';
+                    table = table + '<td>' + res[i].Product_Id + '</td>';
+                    table = table + '<td>' + res[i].Product_Name + '</td>';
+                    table = table + '<td>' + res[i].Product_Quantity + '</td>';
+                    table = table + '<td>' + res[i].Quantity_Sold + '</td>';
+                    table = table + '<td>' + res[i].Quantity_Wish + '</td>';
+                    table = table + '<td>' + res[i].Rate_Star + '</td>';
+                    if (res[i].Product_Status == 0) {
+                        table = table + '<td>' + "Hết hàng" + '</td>';
+                    }
+                    else if (res[i].Product_Status == 1) {
+                        table = table + '<td>' + "Còn hàng" + '</td>';
+                    }
+                    else {
+                        table = table + '<td>' + "Sắp nhập" + '</td>';
+                    }
+                    table = table + "<td>" + "<i class='fa fa-edit btn-action product mr-3 bg-primary' data-toggle='modal' data-target='#product-modal' data-action='0' title='Sửa' per='1' id='" + res[i].Product_Id + "'></i>";
+                    table = table + "<i class='fa fa-trash btn-action kh bg-danger product' per='2' title='Xóa' id='" + res[i].Product_Id + "'></i>";
+                    table = table + '</tr>';
+                }
+                $("tbody").html(table);
+            },
+            error: function () {
+                console.log("Load api get thất bại");
+            }
+        })
+    }
+    $(document).on("click", ".btn-paging-product", function () {
+        $('.btn-paging-product').removeAttr("id");
+        $('.btn-paging-product').css("background-color", "#007bff");
+        $(this).attr("id", "btn-active")
+        $(this).css("background-color", "tomato");
+        page_product = $(this).html();
+        getProduct(page_product, key_product);
+    });
+    $(document).on("click", "#btn-search-product", function () {
+        key_product = $('#ip-search-product').val();
+        getProduct(1, key_product);
+        getCountProduct(key_product);
+    });
+    GetProductById = function (id) {
+        $.ajax({
+            url: "/api/product?id=" + id,
+            method: "GET",
+            contentType: "json",
+            crossDomain: true,
+            dataType: 'json',
+            success: function (res) {
+                //Đặt giá trị các input
+                $("#ip-productname").val(res.Product_Name);
+                $("#ip-productshortname").val(res.Product_ShortName);
+                $("#ip-cpu").val(res.CPU_Id);
+                $("#ip-drive").val(res.Drive_Id);
+                $("#ip-display").val(res.Display_Id);
+                $("#ip-graphic").val(res.Graphic_Id);
+                $("#ip-ram").val(res.RAM_Id);
+                $("#ip-manufacturer").val(res.Manufacturer_Id);
+                $("#ip-need").val(res.Need_Id);
+                $("#ip-status").val(res.Product_Status);
+                $('#image-current').html("Ảnh: " + res.Image);
+                $("#ip-detail").val(res.Product_Description);
+                $("#ip-weight").val(res.Product_Weight);
+                $("#ip-quantity").val(res.Product_Quantity);
+                $("#ip-price").val(res.Product_Price);
+                $("#ip-discount").val(res.Product_Discount);
+
+            },
+            error: function () {
+                console.log("Load api get thất bại");
+            }
+        });
+    }
+    $(document).on("click", ".btn-action.product", function () {
+        var per = $(this).attr("per");
+        var id = $(this).attr("id");
+        //Xóa
+        if (per == 2) {
+            if (confirm("Bạn có chắc muốn xóa sản phẩm này không?")) {
+                DeleteNhanVien(id);
+            }
+        }
+        //Thêm,sửa thì bật modal
+        else {
+            $("#btn-submit").attr("per", per); //đặt per cho nút lưu để xem là thêm hay sửa
+            //Thêm
+            if (per == 0) {
+                $(".modal-title").text("Thêm Latop");
+                //Reset các input
+                $("#ip-productname").val("");
+                $("#ip-productshortname").val("");
+                $("#ip-cpu").val("");
+                $("#ip-drive").val("");
+                $("#ip-display").val("");
+                $("#ip-graphic").val("");
+                $("#ip-ram").val("");
+                $("#ip-manufacturer").val("");
+                $("#ip-need").val("");
+                $("#ip-status").val("");
+                $("#ip-image").val("");
+                $("#ip-detail").val("");
+                $("#ip-price").val("0");
+                $("#ip-weight").val("");
+                $("#ip-quantity").val("0");
+                $("#ip-discount").val("0");
+                $("#image-current").html("Ảnh");
+            }
+            //Sửa
+            else {
+                $(".modal-title").text("Sửa Laptop");
+                $('#btn-submit').attr("name", id);
+                GetProductById(id);
+            }
+        }
+    });
+    $(document).on("click", "#btn-submit", function () {
+        var per = $(this).attr("per");
+        var productname = $("#ip-productname").val();
+        var productshortname = $("#ip-productshortname").val();
+        var cpu = $("#ip-cpu").val();
+        var drive = $("#ip-drive").val();
+        var display = $("#ip-display").val();
+        var graphic = $("#ip-graphic").val();
+        var ram = $("#ip-ram").val();
+        var manufacturer = $("#ip-manufacturer").val();
+        var need = $("#ip-need").val();
+        var status = $("#ip-status").val();
+        var image = $('#ip-image').get(0).files[0];
+        var detail = $("#ip-detail").val();
+        var weight = $("#ip-weight").val();
+        var price = $("#ip-price").val();
+        var quantity = $("#ip-quantity").val();
+        var discount = $("#ip-discount").val();
+        if (productname == '' || productshortname == '' || cpu == ''
+            || drive == '' || display == '' || graphic == '' || quantity == ''
+            || ram == '' || manufacturer == '' || need == '' || discount == '' || price == ''
+            || status == '' || (image == undefined && per == 0) || detail == '' || weight == '') {
+            alert('Vui lòng điền đầy đủ thông tin')
+        }
+        else {
+
+            if (Number.isInteger(quantity) == true && Number(quantity) > 0) {
+                alert('Số lượng phải là số nguyên dương');
+            }
+            else if (Number.isNaN(discount) == true && Number(discount) > 0) {
+                alert('Giảm giá phải là số thực > 0');
+            }
+            else if (Number.isNaN(price) == true && Number(price) > 0) {
+                alert('Giá phải là số thực > 0');
+            }
+            else if (Number.isNaN(weight) == true && Number(weight) > 0) {
+                alert('Trọng lượng phải là số thực > 0');
+            }
+            else {
+                let form = new FormData();
+                var id = $(this).attr('name');
+                if (id == undefined) id = 0;
+                //form.append('id', id)
+                //form.append('per', per);
+                //form.append('productname', productname);
+                //form.append('productshortname', productshortname);
+                //form.append('cpu', cpu);
+                //form.append('drive', drive);
+                //form.append('display', display);
+                //form.append('graphic', graphic);
+                //form.append('ram', ram);
+                //form.append('manufacturer', manufacturer);
+                //form.append('need', need);
+                //form.append('status', status);
+                form.append('image', image);
+                //form.append('detail', detail);
+                //form.append('weight', weight);
+                //form.append('quantity', quantity);
+                //form.append('discount', discount);
+                $.ajax({
+                    url: "/admin/HomeAdmin/UploadAndUpdateProduct?id=" + id + "&per=" + per + "&productname=" + productname + "&productshortname=" + productshortname + "&cpu=" + cpu + "&drive=" + drive
+                        + "&display=" + display + "&graphic=" + graphic + "&ram=" + ram + "&manufacturer=" + manufacturer + "&need=" + need + "&status=" + status + "&detail=" + detail
+                        + "&weight=" + weight + "&quantity=" + quantity + "&discount=" + discount + "&price=" + price,
+                    data: form,
+                    method: "POST",
+                    contentType: false,
+                    processData: false,
+                    success: function (res) {
+                        if (res.message == 'ok') {
+                            alert("Thao tác thành công");
+                            setTimeout(function () {
+                                $(".modal-header button").trigger('click');
+                                getProduct(1, "");
+                                getCountProduct("");
+                            }, 500);
+                        }
+                        else {
+                            alert('thao tác thất bại');
+                        }
+                    }
+                });
+            }
+
+        }
+    });
+</script>

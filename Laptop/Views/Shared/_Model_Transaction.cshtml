@@ -1,0 +1,22 @@
+﻿@{
+    List<Laptop.Models.Entities.Order> orders = ViewBag.Order;
+}
+@foreach (var i in orders)
+{
+    string status = "";
+    if (i.Order_Status == 0) { status = "Đang chờ"; }
+    else if (i.Order_Status == 1) { status = "Đã xong"; }
+    else{ status = "Đã hủy"; }
+
+<tr>
+    <th>@i.Order_Date.ToString().Split(' ')[0]</th>
+    <th>@i.Order_Id</th>
+    <th>@String.Format("{0:0,00} vnđ", i.Total)</th>
+    <th>@i.Name</th>
+    <th>@i.PhoneNumber</th>
+    <th>@i.Address</th>
+    <th>@i.Email</th>
+    <th>@status</th>
+    <th><a href="#" title="Xem chi tiết" data-target="#quickk_view" data-toggle="modal" name="@i.Order_Id" id="show-transaction">Chi tiết</a></th>
+</tr>
+}

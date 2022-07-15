@@ -1,0 +1,62 @@
+﻿@{
+    List<Laptop.Models.Entities.Manufacturer> manufacturer = ViewBag.Manufacturer;
+    List<Laptop.Models.Entities.Need> needs = ViewBag.Need;
+}
+<div class="col-lg-3">
+    <div class="shop-sidebar-inner mb-30">
+        <!-- categories filter start -->
+        <div class="single-sidebar mb-45">
+            <div class="sidebar-inner-title mb-25">
+                <h3>Hãng sản xuất</h3>
+            </div>
+            <div class="sidebar-content-box">
+                <div class="filter-attribute-container">
+                    <ul>
+                        <li><div class="active filter-manufacturer" per="0">Tất cả</div></li>
+                        @foreach (var i in manufacturer)
+                        {
+                            <li><div class="filter-manufacturer" per="@i.Manufacturer_Id">@i.Manufacturer_Name</div></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- categories filter end -->
+        <!-- categories filter start -->
+        <div class="single-sidebar mb-45">
+            <div class="sidebar-inner-title mb-25">
+                <h3>Mức giá</h3>
+            </div>
+            <div class="sidebar-content-box">
+                <div class="filter-attribute-container">
+                    <ul>
+                        <li><div class="active filter-price" per="0">Tất cả</div></li>
+                        <li><div class="filter-price" per="1">Dưới 10 triệu</div></li>
+                        <li><div class="filter-price" per="2">Từ 10 đến 15 triệu</div></li>
+                        <li><div class="filter-price" per="3">Từ 15 đến 20 triệu</div></li>
+                        <li><div class="filter-price" per="4">Từ 20 đến 25 triệu</div></li>
+                        <li><div class="filter-price" per="5">Trên 25 triệu</div></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- categories filter start -->
+        <!-- categories filter start -->
+        <div class="single-sidebar mb-45">
+            <div class="sidebar-inner-title mb-25">
+                <h3>Nhu cầu</h3>
+            </div>
+            <div class="sidebar-content-box">
+                <div class="filter-attribute-container">
+                    <ul>
+                        <li><div class="active filter-need" per="0">Tất cả</div></li>
+                        @foreach (var i in needs)
+                        {
+                            <li><div class="filter-need" per="@i.Need_Id">@i.Need_Name</div></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
